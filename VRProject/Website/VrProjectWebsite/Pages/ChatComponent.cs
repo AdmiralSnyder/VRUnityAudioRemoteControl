@@ -67,6 +67,7 @@ namespace VrProjectWebsite//Blazor.Extensions.SignalR.Test.Client.Pages
                 .AddMessagePackProtocol()
                 .Build();
 
+            this._connection.On<string, string, string>("Send", this.Handle);
             this._connection.On<string>("Send", this.Handle);
             this._connection.OnClose(exc =>
             {
@@ -129,6 +130,14 @@ namespace VrProjectWebsite//Blazor.Extensions.SignalR.Test.Client.Pages
         {
             this._logger.LogInformation(msg);
             this._messages.Add(msg.ToString());
+            this.StateHasChanged();
+            return Task.CompletedTask;
+        }
+
+        private Task Handle(string connectionID, string userIdentifier, string message)
+        {
+            this._logger.LogInformation($"[{connectionID}] {userIdentifier}: {message}");
+            this._messages.Add($"{userIdentifier}: {message}");
             this.StateHasChanged();
             return Task.CompletedTask;
         }

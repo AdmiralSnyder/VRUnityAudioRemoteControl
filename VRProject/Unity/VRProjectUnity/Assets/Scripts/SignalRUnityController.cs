@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -9,8 +10,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using UnityEngine;
 
-public class SignalRUnityController : MonoBehaviour
+public interface IRemoteControllable
 {
+    Color Color { get; set; }
+    string SoundFile { get; set; }
+}
+
+public class SignalRUnityController : MonoBehaviour, IRemoteControllable
+{
+    public AudioSource audioSource;
+
     public bool useSignalR = true;
     public string signalRUrl = "http://localhost:64987/chathub"; // "http://localhost:53353/ChatHub" //http://localhost:64987/
 
@@ -26,9 +35,10 @@ public class SignalRUnityController : MonoBehaviour
         if (useSignalR)
         {
             StartSignalR();
-
         }
     }
+
+    #region Logging
 
     public class UnityLoggingProvider : ILoggerProvider
     {
@@ -41,17 +51,9 @@ public class SignalRUnityController : MonoBehaviour
 
     public class UnityLoggerScope<TState> : IDisposable
     {
-        private TState State { get; set; }
-
-        public UnityLoggerScope(TState state)
-        {
-            State = state;
-        }
-
-        public void Dispose()
-        {
-            //throw new NotImplementedException();
-        }
+        private TState State { get; set; } //TODO: sollte benutzt werden für irgendwas.
+        public UnityLoggerScope(TState state) => State = state;
+        public void Dispose() { }
     }
 
     public class UnityLogger : Microsoft.Extensions.Logging.ILogger
@@ -67,6 +69,8 @@ public class SignalRUnityController : MonoBehaviour
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             => Debug.Log($"<{logLevel}> [{eventId}] {state} {exception} {formatter(state, exception)}");
     }
+
+    #endregion
 
     private async Task<string> GetJwtToken(string userId)
     {
@@ -127,21 +131,18 @@ public class SignalRUnityController : MonoBehaviour
 
             _hubConnection.On<string>("Send", message =>
             {
-                var splittedMessage = message.Split(':');
-                if (splittedMessage.Length > 1 && splittedMessage[1].Trim().StartsWith("Farbe"))
+                //  "lalABSENDERblub:payload"
+                // payload = "Farbe=blue"
+                string sender = message.Substring(0, message.IndexOf(':'));
+                string payload = message.Substring(message.IndexOf(':')+1);
+                var splittedPayload = payload.Split('=');
+                if (splittedPayload.Length == 2)
                 {
-                    var messageParts = message.Split('=');
-                    if (messageParts.Length == 2 && ColorsDict.TryGetValue(messageParts[1].ToLowerInvariant(), out var color))
-                    {
-                        UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                        {
-                            gameObject.scene.GetRootGameObjects()
-                            .First(go => go.name == "Cube")
-                            .GetComponent<Renderer>().material.color = color;
-                        });
-                    }
-                }
+                    var command = splittedPayload[0].Substring(1);
+                    var value = splittedPayload[1];
 
+                    ExecuteCommand(command, value);
+                }               
                 else
                 {
                     Debug.Log($"Send {message}");
@@ -161,6 +162,108 @@ public class SignalRUnityController : MonoBehaviour
         }
     }
 
+    private void ExecuteCommand(string command, string value)
+    {
+        switch(command)
+        {
+            case "Farbe":
+                {
+                    if (TryParseColor(value, out var color))
+                    {
+                        Color = color;
+                    }
+                    break;
+                }
+            case "Audio":
+                {
+                    switch (value)
+                    {
+                        case "mute":
+                            {
+                                MuteAudio();
+                                break;
+                            }
+                        case "unmute":
+                            {
+                                UnMuteAudio();
+                                break;
+                            }
+                        default:
+                            {
+                                if (value.EndsWith(".wav") && File.Exists(value))
+                                {
+                                    PlayAudioFile(value);
+                                }
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+        }
+    }
+
+    private void MuteAudio() => UnityMainThreadDispatcher.Instance().Enqueue(() => audioSource.mute = true);
+    private void UnMuteAudio() => UnityMainThreadDispatcher.Instance().Enqueue(() => audioSource.mute = false);
+
+    private void PlayAudioFile(string fileName)
+    {
+        AudioClip clip = null;
+
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            WWW www1 = new WWW("file://" + fileName);
+            clip = www1.GetAudioClip(false);
+        });
+        while(clip is null)
+        {
+            System.Threading.Thread.Sleep(1);
+        }
+        
+        bool isReadyToPlay = false;
+        while (!isReadyToPlay)
+        {
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                isReadyToPlay = clip.isReadyToPlay;
+            });
+            System.Threading.Thread.Sleep(1);
+        }
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            audioSource.clip = clip;
+            audioSource.Play();
+        });
+    }
+
+    private bool TryParseColor(string value, out Color color) => ColorsDict.TryGetValue(value.ToLowerInvariant(), out color);
+
+    /// <summary>
+    /// Gibt die Farbe des Würfels an.
+    /// </summary>
+    public Color Color
+    {
+        get => _Color;
+        set
+        {
+            _Color = value;
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                gameObject.scene.GetRootGameObjects()
+                .First(go => go.name == "Cube")
+                .GetComponent<Renderer>().material.color = value;
+            });
+        }
+    }
+    private Color _Color = Color.white;
+
+    /// <summary>
+    /// Gibt die abgespielte Datei an.
+    /// </summary>
+    public string SoundFile { get; set; }
+    private string _SoundFile;
+
+    
     private static Dictionary<string, Color> ColorsDict = new Dictionary<string, Color>
     {
         [nameof(Color.red)] = Color.red,
