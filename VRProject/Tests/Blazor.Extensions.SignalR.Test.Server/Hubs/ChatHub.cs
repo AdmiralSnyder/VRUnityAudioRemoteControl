@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Blazor.Extensions.SignalR.Test.Server.Hubs
 {
@@ -49,7 +50,17 @@ namespace Blazor.Extensions.SignalR.Test.Server.Hubs
 
         public Task Send(string message) => Clients.All.SendAsync("Send", Context.ConnectionId, Context.UserIdentifier, message);
 
+        public Task Farbe(string color)
+        {
+            Debug.WriteLine("COLOOOOOOOOOOOOOOOOR");
+            return Clients.All.SendAsync("Farbe", color);
+        }
 
+        public Task File(string filename, string guid, int count, int pckg, string part)
+        {
+            Debug.WriteLine($"FileFileFileFileFile {filename} {guid} {pckg}/{count} : {part.Length}");
+            return Task.CompletedTask;
+        }
 
         //public Task Send(string message)
         //{

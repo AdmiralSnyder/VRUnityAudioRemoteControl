@@ -21,7 +21,13 @@
 <form class="form-inline">
     <div class="input-append">
         <input type="button" class="btn" value="Gimme byte array arguments!" onclick=@DoByteArrayArg />
+    </div>
+</form>
 
+<h4>Upload Test</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <input type="file" id="fileUpload" onchange="@UploadFile" ref="fileInput" /> @*bind="FileUploadContent"*@
     </div>
 </form>
 
@@ -31,6 +37,13 @@
         <input type="text" id="message-text" placeholder="Type a message" bind=@_toEverybody />
         <input type="button" id="broadcast" class="btn" value="Broadcast" onclick=@Broadcast />
         <input type="button" id="broadcast-exceptme" class="btn" value="Broadcast (Others)" onclick=@SendToOthers />
+    </div>
+</form>
+
+<h4>Set Color</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <input type="color" id="message-color" placeholder="Select a color" bind=@_Color /> @*onchange=@SetColor*@
     </div>
 </form>
 
@@ -70,3 +83,14 @@
         <li>@msg</li>
     }
 </ul>
+
+<div>
+    LOG Output
+    <ul id="message-list">
+        @foreach (var msg in LogOutput)
+        {
+            <li>@msg</li>
+        }
+    </ul>
+</div>
+

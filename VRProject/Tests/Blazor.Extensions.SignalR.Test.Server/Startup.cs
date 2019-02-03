@@ -132,8 +132,11 @@ namespace Blazor.Extensions.SignalR.Test.Server
             {
                 routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
             });
-
+            
             app.UseBlazor<VrProjectWebsite.Program>();
+
+            Xabe.FFmpeg.FFmpeg.ExecutablesPath = System.IO.Path.Combine(env.WebRootPath ?? env.ContentRootPath, "ffmpeg");
+            Xabe.FFmpeg.FFmpeg.GetLatestVersion();
         }
     }
 }
