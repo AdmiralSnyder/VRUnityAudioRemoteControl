@@ -119,7 +119,6 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
-
             app.UseHttpsRedirection();
             app.UseCookiePolicy();
             app.UseCors("CorsPolicy");
@@ -128,15 +127,15 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 routes.MapHub<ChatHub>("/chathub");
             });
 
+            app.UseFileUpload(env, true);
+            app.UseMp3OggConverter(env);
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
             });
             
             app.UseBlazor<VrProjectWebsite.Program>();
-
-            Xabe.FFmpeg.FFmpeg.ExecutablesPath = System.IO.Path.Combine(env.WebRootPath ?? env.ContentRootPath, "ffmpeg");
-            Xabe.FFmpeg.FFmpeg.GetLatestVersion();
         }
     }
 }

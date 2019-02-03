@@ -31,6 +31,14 @@
     </div>
 </form>
 
+<form class="form-inline" method="post" enctype="multipart/form-data" target="hiddenFrame">
+    <input type="file" id="formfile" name="ImageFile" required onchange="this.form.submit()"/>
+</form>
+
+<div id="hiddenDiv" style="display:none; visibility:hidden;">
+    <iframe src="hidden.html" height="1" width="1" border="0" scrolling="no" name="hiddenFrame" id="hiddenFrame"></iframe>
+</div>
+
 <h4>To Everybody</h4>
 <form class="form-inline">
     <div class="input-append">
