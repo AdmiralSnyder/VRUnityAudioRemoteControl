@@ -1,49 +1,26 @@
 @page "/chat"
 @inherits ChatComponent
 
-<h4>Serialization Test</h4>
+<h4>Upload Chunked</h4>
 <form class="form-inline">
     <div class="input-append">
-        <input type="button" class="btn" value="Gimme objects!" onclick=@TellHubToDoStuff />
-
+        <input type="file" id="fileUpload" onchange="@UploadFileChunked" ref="fileInput" /> @*bind="FileUploadContent"*@
     </div>
 </form>
 
-<h4>Multiple Arguments</h4>
-<form class="form-inline">
-    <div class="input-append">
-        <input type="button" class="btn" value="Gimme multiple arguments!" onclick=@DoMultipleArgs />
-
-    </div>
-</form>
-
-<h4>Byte array Arguments</h4>
-<form class="form-inline">
-    <div class="input-append">
-        <input type="button" class="btn" value="Gimme byte array arguments!" onclick=@DoByteArrayArg />
-    </div>
-</form>
-
-<h4>Upload Test</h4>
-<form class="form-inline">
-    <div class="input-append">
-        <input type="file" id="fileUpload" onchange="@UploadFile" ref="fileInput" /> @*bind="FileUploadContent"*@
-    </div>
-</form>
-
+<h4>Upload POST</h4>
 <form class="form-inline" method="post" enctype="multipart/form-data" target="hiddenFrame">
-    <input type="file" id="formfile" name="ImageFile" required onchange="this.form.submit()"/>
+    <input type="file" id="formfile" name="ImageFile" required onchange="this.form.submit()" />
+    <div id="hiddenDiv" style="display:none; visibility:hidden;">
+        <iframe src="hidden.html" height="1" width="1" border="0" scrolling="no" name="hiddenFrame" id="hiddenFrame"></iframe>
+    </div>
 </form>
 
-<div id="hiddenDiv" style="display:none; visibility:hidden;">
-    <iframe src="hidden.html" height="1" width="1" border="0" scrolling="no" name="hiddenFrame" id="hiddenFrame"></iframe>
-</div>
-
-<h4>To Everybody</h4>
+<h4>Broadcast Command</h4>
 <form class="form-inline">
     <div class="input-append">
-        <input type="text" id="message-text" placeholder="Type a message" bind=@_toEverybody />
-        <input type="button" id="broadcast" class="btn" value="Broadcast" onclick=@Broadcast />
+        <input type="text" id="message-text" placeholder="Type a message" bind=@CommandText />
+        <input type="button" id="broadcast" class="btn" value="Broadcast" onclick=@BroadcastCommand />
         <input type="button" id="broadcast-exceptme" class="btn" value="Broadcast (Others)" onclick=@SendToOthers />
     </div>
 </form>
@@ -51,37 +28,7 @@
 <h4>Set Color</h4>
 <form class="form-inline">
     <div class="input-append">
-        <input type="color" id="message-color" placeholder="Select a color" bind=@_Color /> @*onchange=@SetColor*@
-    </div>
-</form>
-
-<h4>To Connection</h4>
-<form class="form-inline">
-    <div class="input-prepend input-append">
-        <input type="text" name="connection-message" id="connection-message-text" placeholder="Type a message" bind=@_toConnection />
-        <input type="text" name="connection-id" id="connection-id" placeholder="Type a connection id" bind=@_connectionId />
-        <input type="button" id="connection-send" class="btn" value="Send to Connection" onclick=@SendToConnection />
-    </div>
-</form>
-
-<h4>To Me</h4>
-<form class="form-inline">
-    <div class="input-append">
-        <input type="text" id="me-message-text" placeholder="Type a message" bind=@_toMe />
-        <input type="button" id="send" class="btn" value="Send to Me" onclick=@SendToMe />
-    </div>
-</form>
-
-<h4>Group Actions</h4>
-<form class="form-inline">
-    <div class="input-prepend input-append">
-        <input type="text" name="group-message" id="group-message-text" placeholder="Type a message" bind=@_toGroup />
-        <input type="text" name="group-name" id="group-name" placeholder="Type a group name" bind=@_groupName />
-        <input type="button" id="groupmsg" class="btn" value="Send to Group" onclick=@SendToGroup />
-        <input type="button" id="others-groupmsg" class="btn" value="Send to Others in Group" onclick=@SendToOthersInGroup />
-        <input type="button" id="join-group" class="btn" value="Join Group" onclick=@JoinGroup />
-        <input type="button" id="leave-group" class="btn" value="Leave Group" onclick=@LeaveGroup />
-
+        <input type="color" id="message-color" placeholder="Select a color" bind=@Color /> @*onchange=@SetColor*@
     </div>
 </form>
 

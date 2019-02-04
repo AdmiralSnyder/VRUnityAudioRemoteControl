@@ -1,0 +1,102 @@
+@page "/chatDemo"
+<h1>HIER STEHT WAS DRÜBER</h1>
+
+@layout ChatLayout
+@inherits ChatComponent
+@*<CascadingValue Value=@LogItemContainer>CascadingValue</CascadingValue>*@
+
+hier steht ein Text.
+@(TheChatLayout.CascadingParameterValue = "geändert in ChatDemo.cshtml")
+dazwischen ist auch was.
+@functions
+{
+
+
+//    [CascadingParameter] protected Container<IHasLog> LogItemContainer
+//    {
+//        get
+//{
+//System.Diagnostics.Debug.WriteLine("Getter");
+//return _LogItemContainer;
+//}
+//        set
+//        {
+//System.Diagnostics.Debug.WriteLine("Setter");
+//            _LogItemContainer = value;
+//            if (_LogItemContainer != null)
+//            {
+//                _LogItemContainer.Item = this;
+//            }
+//        }
+//    }
+}
+
+<h4>Serialization Test</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <input type="button" class="btn" value="Gimme objects!" onclick=@SendDemoObjectAndList />
+    </div>
+</form>
+
+<h4>Multiple Arguments</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <input type="button" class="btn" value="Gimme multiple arguments!" onclick=@DoMultipleArgs />
+    </div>
+</form>
+
+<h4>Byte array Arguments</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <input type="button" class="btn" value="Gimme byte array arguments!" onclick=@DoByteArrayArg />
+    </div>
+</form>
+
+<h4>To Connection</h4>
+<form class="form-inline">
+    <div class="input-prepend input-append">
+        <input type="text" name="connection-message" id="connection-message-text" placeholder="Type a message" bind=@_toConnection />
+        <input type="text" name="connection-id" id="connection-id" placeholder="Type a connection id" bind=@_connectionId />
+        <input type="button" id="connection-send" class="btn" value="Send to Connection" onclick=@SendToConnection />
+    </div>
+</form>
+
+<h4>To Me</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <input type="text" id="me-message-text" placeholder="Type a message" bind=@_toMe />
+        <input type="button" id="send" class="btn" value="Send to Me" onclick=@Echo />
+    </div>
+</form>
+
+<h4>Group Actions</h4>
+<form class="form-inline">
+    <div class="input-prepend input-append">
+        <input type="text" name="group-message" id="group-message-text" placeholder="Type a message" bind=@_toGroup />
+        <input type="text" name="group-name" id="group-name" placeholder="Type a group name" bind=@_groupName />
+        <input type="button" id="groupmsg" class="btn" value="Send to Group" onclick=@SendToGroup />
+        <input type="button" id="others-groupmsg" class="btn" value="Send to Others in Group" onclick=@SendToOthersInGroup />
+        <input type="button" id="join-group" class="btn" value="Join Group" onclick=@JoinGroup />
+        <input type="button" id="leave-group" class="btn" value="Leave Group" onclick=@LeaveGroup />
+
+    </div>
+</form>
+
+<ul id="message-list">
+    @foreach (var msg in _messages)
+    {
+    <li>@msg</li>
+    }
+</ul>
+
+<div>
+    LOG Output
+    <ul id="message-list">
+        @foreach (var msg in LogOutput)
+        {
+        <li>@msg</li>
+        }
+    </ul>
+</div>
+
+@{  }
