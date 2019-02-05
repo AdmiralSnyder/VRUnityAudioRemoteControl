@@ -19,12 +19,6 @@ namespace VrProjectWebsite
     {
         [CascadingParameter] public ChatLayout TheChatLayout { get; set; }
         
-        protected override void OnParametersSet()
-        {
-            base.OnParametersSet();
-            _logger.LogInformation("OnParametersSet");
-        }
-
         //private Container<IHasLog> _LogItemContainer;
         //[CascadingParameter] protected string TestParameter { get; set; }
 
@@ -61,14 +55,14 @@ namespace VrProjectWebsite
 
         protected override Task OnParametersSetAsync()
         {
-            TheChatLayout.CascadingParameterValue = "gesetzt in OnParametersSetAsync";
+            //TheChatLayout?.CascadingParameterValue = "gesetzt in OnParametersSetAsync";
             
             return base.OnParametersSetAsync();
         }
 
         protected override void OnInit()
         {
-            TheChatLayout.CascadingParameterValue = "gesetzt in onInit";
+            //TheChatLayout?.CascadingParameterValue = "gesetzt in onInit";
             base.OnInit();
         }
 
@@ -76,7 +70,7 @@ namespace VrProjectWebsite
         {
             _logger.LogMessages = LogOutput;
 
-            TheChatLayout.CascadingParameterValue = "gesetzt in OnInitAsync";
+            //TheChatLayout.CascadingParameterValue = "gesetzt in OnInitAsync";
 
             _connection = new HubConnectionBuilder()
                 .WithUrl("/chathub",
