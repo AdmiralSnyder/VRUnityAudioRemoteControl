@@ -238,6 +238,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55b77cdf8342ebc41be1db28ce3d9943, type: 3}
+--- !u!95 &263083359 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: 55b77cdf8342ebc41be1db28ce3d9943,
+    type: 3}
+  m_PrefabInstance: {fileID: 220072063}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,8 +722,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1562640817}
-  - component: {fileID: 1562640818}
   - component: {fileID: 1562640819}
+  - component: {fileID: 1562640823}
+  - component: {fileID: 1562640818}
+  - component: {fileID: 1562640821}
+  - component: {fileID: 1562640820}
+  - component: {fileID: 1562640822}
   m_Layer: 0
   m_Name: SignalRObject
   m_TagString: Untagged
@@ -748,7 +758,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1562640816}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc15847b82d2c3245a2282c36c7e1be2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fb30fad864abcb429c621c7458a7849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   remoteControlEnabled: 1
@@ -767,6 +777,64 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   signalRServer: http://localhost:64987/
   hub: chathub
+--- !u!114 &1562640820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562640816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc3c98e38aada894dba549ec92e829f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1562640818}
+  coloredObject: {fileID: 859888144}
+--- !u!114 &1562640821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562640816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be97915ea79672a4599d7a70c9734c52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1562640818}
+  animator: {fileID: 263083359}
+  DefaultAnimation: Idle
+--- !u!114 &1562640822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562640816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f977f17425c707247b2f41fea4670834, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1562640823}
+  animator: {fileID: 263083359}
+  DefaultAnimation: Idle
+--- !u!114 &1562640823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1562640816}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67c733ba5fd4f6e4aae990dfe33a36de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  remoteControlEnabled: 1
+  connectionManager: {fileID: 1562640819}
 --- !u!1 &1608125916 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 184210, guid: e322e7f273f8f774d9491dc74ceebaba,
@@ -925,6 +993,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61be5ed76a25b414d9234a3ba40a3db6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Name: 
+  m_EditorClassIdentifier: 
   remoteControlEnabled: 1
   connectionManager: {fileID: 1562640819}
+  UsedSignalRServer: 
   audioSource: {fileID: 1633583905}
+  _SoundFile: 
+  _Muted: 0
