@@ -1,6 +1,6 @@
 ﻿namespace NugetDownloader
 {
-    partial class Form1
+    partial class NugetDownloaderForm
     {
         /// <summary>
         /// Required designer variable.
@@ -37,9 +37,9 @@
             // 
             this.button1.Location = new System.Drawing.Point(512, 79);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(160, 23);
             this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
+            this.button1.Text = "Get Nuget Dependencies";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.Button1_Click);
             // 
@@ -59,7 +59,7 @@
             this.textBox2.TabIndex = 2;
             this.textBox2.Text = "1.1.0";
             // 
-            // Form1
+            // NugetDownloaderForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -67,8 +67,8 @@
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button1);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "NugetDownloaderForm";
+            this.Text = "Nuget Downloader";
             this.ResumeLayout(false);
             this.PerformLayout();
 

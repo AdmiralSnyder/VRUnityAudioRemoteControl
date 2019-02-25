@@ -17,40 +17,21 @@ namespace VrProjectWebsite
 {
     public class ChatComponent : BlazorComponent
     {
-        //[CascadingParameter] public ChatLayout TheChatLayout { get; set; }
-        
-        //private Container<IHasLog> _LogItemContainer;
-        //[CascadingParameter] protected string TestParameter { get; set; }
+        [Inject]
+        private HttpClient Http { get; set; }
+        private HubConnection Connection;
 
-        [Inject] private HttpClient _http { get; set; }
-        
-        private ILogger<ChatComponent> _logger { get; set; } = new ILogger<ChatComponent>(); /* [Inject] */
+        /* [Inject] */
+        private ILogger<ChatComponent> Logger { get; set; } = new ILogger<ChatComponent>(); 
 
         private async Task<string> GetJwtToken(string userId)
         {
-            var httpResponse = await _http.GetAsync($"/generatetoken?user={userId}");
+            var httpResponse = await Http.GetAsync($"/generatetoken?user={userId}");
             httpResponse.EnsureSuccessStatusCode();
             return await httpResponse.Content.ReadAsStringAsync();
         }
 
-
         internal string CommandText { get; set; }
-
-        internal string UploadPostResult
-        {
-            get => _UploadPostResult;
-            set
-            {
-                if (value != _UploadPostResult)
-                {
-                    _logger.LogInformation("ergebnis");
-                    StateHasChanged();
-                    _UploadPostResult = value;
-                }
-            }
-        }
-        private string _UploadPostResult;
-
 
         internal string Color {
             get => _Color;
@@ -75,32 +56,15 @@ namespace VrProjectWebsite
 
         public HashSet<string> Animations = new HashSet<string>();
 
-        public List<string> _messages { get; set; } = new List<string>();
-
         public List<string> LogOutput { get; set; } = new List<string>();
-
-        private HubConnection _connection;
-
-        protected override Task OnParametersSetAsync()
-        {
-            //TheChatLayout?.CascadingParameterValue = "gesetzt in OnParametersSetAsync";
-            
-            return base.OnParametersSetAsync();
-        }
-
-        protected override void OnInit()
-        {
-            //TheChatLayout?.CascadingParameterValue = "gesetzt in onInit";
-            base.OnInit();
-        }
 
         protected override async Task OnInitAsync()
         {
-            _logger.LogMessages = LogOutput;
+            Logger.LogMessages = LogOutput;
 
             //TheChatLayout.CascadingParameterValue = "gesetzt in OnInitAsync";
 
-            _connection = new HubConnectionBuilder()
+            Connection = new HubConnectionBuilder()
                 .WithUrl("/chathub",
                 opt =>
                 {
@@ -110,19 +74,17 @@ namespace VrProjectWebsite
                     opt.AccessTokenProvider = async () =>
                     {
                         var token = await GetJwtToken("DemoUser");
-                        _logger.LogInformation($"Access Token: {token}");
+                        Logger.LogInformation($"Access Token: {token}");
                         return token;
                     };
                 })
                 .AddMessagePackProtocol()
                 .Build();
 
-            //_connection.On<string, string, string>("Send", Handle);
-            
             //only register for logging purposes
-            _connection.On<string>("Command", Handle);
+            Connection.On<string>("Command", Handle);
 
-            _connection.On<string>("AddAnimations", animations =>
+            Connection.On<string>("AddAnimations", animations =>
             {
                 foreach(var animation in animations.Split(','))
                 {
@@ -132,194 +94,31 @@ namespace VrProjectWebsite
                 return Task.CompletedTask;
             });
 
-
-            _connection.OnClose(exc =>
+            Connection.OnClose(exc =>
             {
-                _logger.LogError(exc, "Connection was closed!");
+                Logger.LogError(exc, "Connection was closed!");
                 return Task.CompletedTask;
             });
 
-            await _connection.StartAsync();
+            await Connection.StartAsync();
         }
 
         private Task Handle(object msg)
         {
-            _logger.LogInformation(msg);
-            _messages.Add(msg.ToString());
+            Logger.LogInformation(msg);
             StateHasChanged(); 
             return Task.CompletedTask;
         }
 
-        private Task Handle(string connectionID, string userIdentifier, string message)
-        {
-            _logger.LogInformation($"[{connectionID}] {userIdentifier}: {message}");
-            _messages.Add($"{userIdentifier}: {message}");
-            StateHasChanged();
-            return Task.CompletedTask;
-        }
+        internal async Task BroadcastCommand() => await Connection.InvokeAsync("Command", CommandText);
 
-        internal async Task BroadcastCommand() => await _connection.InvokeAsync("Command", CommandText);
-        internal void FormChanged()
-        {
-            _logger.LogInformation("FormChanged");
-        }
+        internal async Task SetColor(string color) => await Connection.InvokeAsync("Color", color);
 
-        internal async Task HiddenDivChanged() => await _connection.InvokeAsync("Command", "mieps.");
+        internal async Task SetAudio(string audio) => await Connection.InvokeAsync("Audio", audio);
+        internal async Task SetAudioMute() => await Connection.InvokeAsync("Audio", "mute");
+        internal async Task SetAudioUnmute() => await Connection.InvokeAsync("Audio", "unmute");
+        internal async Task StopAudio() => await Connection.InvokeAsync("Audio", "stop");
 
-        internal async Task SetColor(string color) => await _connection.InvokeAsync("Color", color);
-
-        internal async Task SetAudio(string audio) => await _connection.InvokeAsync("Audio", audio);
-
-        internal async Task SetAnimation(string animation) => await _connection.InvokeAsync("Animation", animation);
-
-        #region Group Management
-
-
-        internal async Task JoinGroup() => await _connection.InvokeAsync("JoinGroup", _groupName);
-
-        internal async Task LeaveGroup() => await _connection.InvokeAsync("LeaveGroup", _groupName);
-
-        #endregion
-
-        #region File Upload
-
-        internal ElementRef fileInput;
-        internal string FileUploadContent { get; set; }
-        
-        internal async Task UploadFileChunked()
-        {
-            _logger.LogInformation("UploadFileUploadFileUploadFileUploadFileUploadFile");
-            var fileName = await JSRuntime.Current.InvokeAsync<string>("getFileName", fileInput);
-            var base64File = await JSRuntime.Current.InvokeAsync<string>("getFileData", fileInput);
-            _logger.LogInformation("GetFileData: after " + base64File.Length + " " + base64File.Substring(0, 20));
-            var guid = Guid.NewGuid();
-            var maxsize = 32000;
-            var parts = (int)Math.Ceiling((double)base64File.Length / maxsize);
-            foreach (var (part, idx) in SplitBy(base64File, maxsize).Select((s, i) => (s, i)))
-            {
-                await _connection.InvokeAsync("File", fileName, guid.ToString(), parts, idx, part);
-            }
-
-            _logger.LogInformation("sent");
-        }
-
-        #endregion
-
-        public static IEnumerable<string> SplitBy(string str, int chunkLength)
-        {
-            if (string.IsNullOrEmpty(str)) throw new ArgumentException();
-            if (chunkLength < 1) throw new ArgumentException();
-
-            for (int i = 0; i < str.Length; i += chunkLength)
-            {
-                if (chunkLength + i > str.Length)
-                {
-                    chunkLength = str.Length - i;
-                }
-
-                yield return str.Substring(i, chunkLength);
-            }
-        }
-
-        #region Demo stuff
-
-        internal string _toConnection { get; set; }
-        internal string _connectionId { get; set; }
-        internal string _toMe { get; set; }
-        internal string _toGroup { get; set; }
-        internal string _groupName { get; set; }
-
-        private IDisposable _objectHandle;
-        private IDisposable _listHandle;
-        private IDisposable _multiArgsHandle;
-        private IDisposable _multiArgsComplexHandle;
-        private IDisposable _byteArrayHandle;
-
-        public Task DemoMultipleArgs(string arg1, int arg2, string arg3, int arg4)
-        {
-            _logger.LogInformation("Got Multiple Args!");
-            _multiArgsHandle.Dispose();
-
-            return HandleArgs(arg1, arg2, arg3, arg4);
-        }
-
-        public Task DemoMultipleArgsComplex(object arg1, object arg2)
-        {
-            _logger.LogInformation("Got Multiple Args Complex!");
-            _multiArgsComplexHandle.Dispose();
-
-            return HandleArgs(arg1, arg2);
-        }
-
-        public Task DemoByteArrayArg(byte[] array)
-        {
-            _logger.LogInformation("Got byte array!");
-            _byteArrayHandle.Dispose();
-
-            return HandleArgs(BitConverter.ToString(array));
-        }
-
-        internal async Task SendToOthers() => await _connection.InvokeAsync("SendToOthers", CommandText);
-
-        internal async Task SendToConnection() => await _connection.InvokeAsync("SendToConnection", _connectionId, _toConnection);
-
-        internal async Task Echo() => await _connection.InvokeAsync("Echo", _toMe);
-
-        internal async Task SendToGroup() => await _connection.InvokeAsync("SendToGroup", _groupName, _toGroup);
-
-        internal async Task SendToOthersInGroup() => await _connection.InvokeAsync("SendToOthersInGroup", _groupName, _toGroup);
-
-
-        internal async Task SendDemoObjectAndList()
-        {
-            _objectHandle = _connection.On<DemoData>("DemoMethodObject", OnDemoMethodObject);
-            _listHandle = _connection.On<DemoData[]>("DemoMethodList", OnDemoMethodList);
-            await _connection.InvokeAsync("DoSomething");
-        }
-
-        public Task OnDemoMethodObject(object data)
-        {
-            _logger.LogInformation("Got object!");
-            _logger.LogInformation(data?.GetType().FullName ?? "<NULL>");
-            _objectHandle.Dispose();
-            if (data == null) return Task.CompletedTask;
-            return Handle(data);
-        }
-
-        public Task OnDemoMethodList(object data)
-        {
-            _logger.LogInformation("Got List!");
-            _logger.LogInformation(data?.GetType().FullName ?? "<NULL>");
-            _listHandle.Dispose();
-            if (data == null) return Task.CompletedTask;
-            return Handle(data);
-        }
-
-        internal async Task DoMultipleArgs()
-        {
-            _multiArgsHandle = _connection.On<string, int, string, int>("DemoMultiArgs", DemoMultipleArgs);
-            _multiArgsComplexHandle = _connection.On<DemoData, DemoData[]>("DemoMultiArgs2", DemoMultipleArgsComplex);
-            await _connection.InvokeAsync("DoMultipleArgs");
-            await _connection.InvokeAsync("DoMultipleArgsComplex");
-        }
-
-        internal async Task DoByteArrayArg()
-        {
-            _byteArrayHandle = _connection.On<byte[]>("DemoByteArrayArg", DemoByteArrayArg);
-            var array = await _connection.InvokeAsync<byte[]>("DoByteArrayArg");
-
-            _logger.LogInformation("Got byte returned from hub method array: {0}", BitConverter.ToString(array));
-        }
-
-        private Task HandleArgs(params object[] args)
-        {
-            string msg = string.Join(", ", args);
-
-            _logger.LogInformation(msg);
-            _messages.Add(msg);
-            StateHasChanged();
-            return Task.CompletedTask;
-        }
-        #endregion
+        internal async Task SetAnimation(string animation) => await Connection.InvokeAsync("Animation", animation);
     }
 }

@@ -11,9 +11,9 @@ using NugetLib;
 
 namespace NugetDownloader
 {
-    public partial class Form1 : Form
+    public partial class NugetDownloaderForm : Form
     {
-        public Form1()
+        public NugetDownloaderForm()
         {
             InitializeComponent();
         }

@@ -10,16 +10,7 @@
 </head>
 <body>
     <app>Loading...</app>
-
-    <script src="/site.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>window.JsFunctions =
-{
-    SubmitForm: function (form) { form.submit(); },
-    Alert: function (text) { alert(text); },
-    SetValue: function (element, newValue) { element.value = newValue; },
-    GetIFrameInnerHtml: function () { return frames[0].document.body.innerHTML ;}
-}
-    </script>
+    <script src="JsFunctions.js"></script>
 </body>
 </html>

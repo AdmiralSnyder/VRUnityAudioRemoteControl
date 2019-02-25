@@ -31,14 +31,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\iframDummy.html" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\CommonTypes\CommonTypes.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="Pages\Chat.cshtml">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
       <Generator>MSBuild:BlazorGenerateDeclaration</Generator>
