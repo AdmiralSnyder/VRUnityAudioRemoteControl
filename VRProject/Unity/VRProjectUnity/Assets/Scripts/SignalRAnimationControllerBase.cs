@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR.Client;
 using UnityEngine;
 
 public abstract class SignalRAnimationControllerBase<TSignalRController, TArgs> : SignalRUnityControllerBase<TSignalRController, TArgs>
-    where TSignalRController : SignalRController<TArgs>
+    where TSignalRController : SignalREntityController<TArgs>
 {
     public Animator animator;
 
@@ -14,6 +15,7 @@ public abstract class SignalRAnimationControllerBase<TSignalRController, TArgs> 
 
     public override void AwakeVirtual()
     {
+        base.AwakeVirtual();
         foreach (var animationName in animator.runtimeAnimatorController.animationClips.Select(ac => ac.name))
         {
             AnimationNames.Add(animationName);
@@ -32,6 +34,12 @@ public abstract class SignalRAnimationControllerBase<TSignalRController, TArgs> 
             Debug.LogError("got an animation command with an unknown animationName: " + animation);
             return false;
         }
+    }
+
+    public override void Connected(HubConnection hubConnection)
+    {
+        base.Connected(hubConnection);
+        hubConnection.SendAsync("AddAnimations", string.Join(",", AnimationNames));
     }
 
     public string DefaultAnimation = "Idle";

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class SignalRColorControllerBase<TSignalRController, TArgs> : SignalRUnityControllerBase<TSignalRController, TArgs>
-    where TSignalRController : SignalRController<TArgs>
+    where TSignalRController : SignalREntityController<TArgs>
 {
     /// <summary>
     /// Farbe parsen
@@ -35,6 +35,8 @@ public abstract class SignalRColorControllerBase<TSignalRController, TArgs> : Si
             return false;
         }
     }
+
+    public void HandleColor(string colorString) => Color = TryParseColor(colorString, Color);
 
     protected Color TryParseColor(string value, Color defaultColor) => TryParseColor(value, out var color) ? color : defaultColor;
 

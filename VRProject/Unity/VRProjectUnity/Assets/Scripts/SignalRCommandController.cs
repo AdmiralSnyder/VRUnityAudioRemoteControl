@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using Debug = UnityEngine.Debug;
 
-public partial class SignalRCommandController : SignalRController<(string Command, string Value)>
+public partial class SignalRCommandController : SignalREntityController<(string Command, string Value)>
 {
-    protected override void RegisterCommands(HubConnection hubConnection)
+    public override void RegisterCommands(HubConnection hubConnection)
     {
         base.RegisterCommands(hubConnection);
 

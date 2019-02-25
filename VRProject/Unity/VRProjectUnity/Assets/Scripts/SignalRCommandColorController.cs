@@ -4,10 +4,7 @@
     {
         if (args.Data.Command == "Color")
         {
-            if (TryParseColor(args.Data.Value, out var color))
-            {
-                Color = color;
-            }
+            HandleColor(args.Data.Value);
         }
     }
 }

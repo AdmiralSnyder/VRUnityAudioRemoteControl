@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.AspNetCore.SignalR.Client;
 
-public partial class SignalRRegisteredCommandController : SignalRController<HubConnection>
+public partial class SignalRRegisteredCommandController : SignalREntityController<HubConnection>
 {
-    protected override void RegisterCommands(HubConnection hubConnection)
+    public override void RegisterCommands(HubConnection hubConnection)
     {
         base.RegisterCommands(hubConnection);
 

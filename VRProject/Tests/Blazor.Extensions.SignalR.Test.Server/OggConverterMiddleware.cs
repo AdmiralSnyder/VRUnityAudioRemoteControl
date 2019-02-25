@@ -10,25 +10,25 @@ using Xabe.FFmpeg;
 
 namespace Blazor.Extensions.SignalR.Test.Server
 {
-    public static class Mp3OggConverterExtensions
+    public static class OggConverterExtensions
     {
-        public static IApplicationBuilder UseMp3OggConverter(this IApplicationBuilder builder, IHostingEnvironment env)
+        public static IApplicationBuilder UseOggConverter(this IApplicationBuilder builder, IHostingEnvironment env)
         {
-            Mp3OggConverterMiddleware.WorkPath = env.WebRootPath ?? env.ContentRootPath;
-            Xabe.FFmpeg.FFmpeg.ExecutablesPath = Path.Combine(Mp3OggConverterMiddleware.WorkPath, "ffmpeg");
+            OggConverterMiddleware.WorkPath = env.WebRootPath ?? env.ContentRootPath;
+            Xabe.FFmpeg.FFmpeg.ExecutablesPath = Path.Combine(OggConverterMiddleware.WorkPath, "ffmpeg");
             Directory.CreateDirectory(Xabe.FFmpeg.FFmpeg.ExecutablesPath);
             Xabe.FFmpeg.FFmpeg.GetLatestVersion();
-            return builder.UseMiddleware<Mp3OggConverterMiddleware>();
+            return builder.UseMiddleware<OggConverterMiddleware>();
         }
     }
 
-    public class Mp3OggConverterMiddleware
+    public class OggConverterMiddleware
     {
         private readonly RequestDelegate _next;
         private IHostingEnvironment _hostingEnv;
         internal static string WorkPath;
 
-        public Mp3OggConverterMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv)
+        public OggConverterMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv)
         {
             _next = next;
             _hostingEnv = hostingEnv;
@@ -40,9 +40,10 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 && context.Items.TryGetValue("SavedFiles", out var savedFilesObj)
                 && savedFilesObj is List<string> savedFiles)
             {
-                foreach (var savedFile in savedFiles.Where(sf => sf.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase)))
+                foreach (var savedFile in savedFiles.Where(sf => sf.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase) || sf.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    await ConvertMp3ToOggAsync(Path.Combine(WorkPath, savedFile));
+                    await ConvertToOggAsync(Path.Combine(WorkPath, savedFile));
+                    await context.Response.WriteAsync($"Successfully converted.{Environment.NewLine}{$"{savedFile}.ogg"}");
                 }
             }
             else
@@ -51,7 +52,7 @@ namespace Blazor.Extensions.SignalR.Test.Server
             }
         }
 
-        private async Task ConvertMp3ToOggAsync(string savedFile)
+        private async Task ConvertToOggAsync(string savedFile)
         {
             await Conversion.Convert(savedFile, savedFile + ".ogg").Start();
         }

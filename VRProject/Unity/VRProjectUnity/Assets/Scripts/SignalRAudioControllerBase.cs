@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 
 public abstract class SignalRAudioControllerBase<TSignalRController, TArgs> : SignalRUnityControllerBase<TSignalRController, TArgs>
-    where TSignalRController : SignalRController<TArgs>
+    where TSignalRController : SignalREntityController<TArgs>
 {
     /// <summary>
     /// Audioquelle, von der aus Töne gespielt werden.
@@ -98,10 +98,19 @@ public abstract class SignalRAudioControllerBase<TSignalRController, TArgs> : Si
     {
         switch (audioCommand)
         {
+            case "stop": StopAudio(); break;
             case "mute": Muted = true; break;
             case "unmute": Muted = false; break;
             default: return PlayAudioFile(audioCommand);
         }
         return true;
+    }
+
+    private void StopAudio()
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            audioSource.Stop();
+        });
     }
 }

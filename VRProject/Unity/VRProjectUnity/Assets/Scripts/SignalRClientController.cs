@@ -1,68 +1,50 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+using System.Text;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 using UnityEngine;
+using System.Net.Http;
+
 using Debug = UnityEngine.Debug;
 
-public abstract class SignalRController<TRegisterEventArgs> : MonoBehaviour
+public class SignalRClientController : MonoBehaviour
 {
-    void Awake() => AwakeVirtual();
+    public SignalRConnectionManager connectionManager;
+    public string clientName = "unity";
+    public bool signalREnabled = true;
 
-    protected virtual void AwakeVirtual() { }
+    public List<SignalREntityController> EntityControllers { get; } = new List<SignalREntityController>();
 
-    // Start is called before the first frame update
     public void Start() => StartVirtual();
 
-    #region public fields for unity
-
-    /// <summary>
-    /// Soll Fernsteuerung aktiviert werden?
-    /// </summary>
-    public bool remoteControlEnabled = true;
-
-    public SignalRConnectionManager connectionManager;
-
-    private string UsedSignalRServer;
-    
-    #endregion
-
-    private string SignalRUrl => $"{UsedSignalRServer}/{connectionManager.hub}";
-
-    private HubConnection HubConnection = null;
-
-    private async Task<string> GetJwtToken(string userId)
+    protected virtual void StartVirtual()
     {
-        var http = new HttpClient { BaseAddress = new Uri(UsedSignalRServer) };
+        Debug.Log("starting");
+
+        if (signalREnabled)
+        {
+            StartSignalRAsync();
+        }
+    }
+
+    private string SignalRUrl => $"{connectionManager.UsedSignalRServer}/{connectionManager.hub}";
+
+    public async Task<string> GetJwtToken(string userId)
+    {
+        var http = new HttpClient { BaseAddress = new Uri(connectionManager.UsedSignalRServer) };
         var httpResponse = await http.GetAsync($"/generatetoken?user={userId}");
         httpResponse.EnsureSuccessStatusCode();
         return await httpResponse.Content.ReadAsStringAsync();
     }
 
-    protected virtual void StartVirtual()
-    {
-        if (Environment.GetCommandLineArgs().FirstOrDefault(a => a.StartsWith("server=")) is string serverArg)
-        {
-            UsedSignalRServer = serverArg.Split('=')[1];
-        }
-        else
-        {
-            UsedSignalRServer = connectionManager.signalRServer;
-        }
+    private HubConnection HubConnection = null;
 
-        Debug.Log("starting");
-
-        if (remoteControlEnabled)
-        {
-            StartSignalR();
-        }
-    }
-
-    void StartSignalR()
+    async void StartSignalRAsync()
     {
         if (HubConnection == null)
         {
@@ -93,17 +75,29 @@ public abstract class SignalRController<TRegisterEventArgs> : MonoBehaviour
 
             Debug.Log("Attaching event...");
             HubConnection.Closed += HubConnection_Closed;
+            //HubConnection.On<string>("Connected", connectionID =>
+            //{
+            //    if (connectionID == HubConnection.Connection)
+            //});
 
-            RegisterCommands(HubConnection);
+            foreach (var entityController in EntityControllers)
+            {
+                entityController.RegisterCommands(HubConnection);
+            }
 
             //_hubConnection.On<string, string>("Receive", (user, message) =>
             //{
             //    Debug.Log($"Receive {message}");
             //});
-            
+
             Debug.Log("Starting Asynchronously...");
-            HubConnection.StartAsync();
-            
+            await HubConnection.StartAsync();
+
+            foreach (var entity in EntityControllers)
+            {
+                entity.Connected(HubConnection);
+            }
+
             Debug.Log("Started..." + $"{HubConnection.State}");
         }
         else
@@ -118,8 +112,4 @@ public abstract class SignalRController<TRegisterEventArgs> : MonoBehaviour
         HubConnection = null;
         return Task.CompletedTask;
     }
-
-    protected virtual void RegisterCommands(HubConnection hubConnection) { }
-
-    public abstract void Init(Action<object, EventArgs<TRegisterEventArgs>> onInitEvent);
 }

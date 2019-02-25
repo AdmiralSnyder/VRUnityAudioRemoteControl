@@ -1,0 +1,9 @@
+SignalR-Hub
+
+  --> Client --> Connection
+    --> Entity
+      --> Feature
+
+netsh http add urlacl url=http://*:64987/ user=everyone
+
+https://gitter.im/aspnet/Blazor

@@ -15,7 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\CommonTypes\CommonTypes.csproj" />
     <ProjectReference Include="..\..\Website\VrProjectWebsite\VrProjectWebsite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="posted\" />
   </ItemGroup>
 
 </Project>

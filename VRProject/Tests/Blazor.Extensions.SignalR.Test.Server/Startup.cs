@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Security.Claims;
@@ -126,16 +128,31 @@ namespace Blazor.Extensions.SignalR.Test.Server
             {
                 routes.MapHub<ChatHub>("/chathub");
             });
-
             app.UseFileUpload(env, true);
-            app.UseMp3OggConverter(env);
+            
+            app.UseOggConverter(env);
+
+            //app.UseDirectoryBrowser();
+            app.UseFileDownloader(env);
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
             });
-            
+
             app.UseBlazor<VrProjectWebsite.Program>();
+            //app.UseFileDownloader(env);
+
+            //app.UseFileServer(true);
+
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(
+            //    Path.Combine(Directory.GetCurrentDirectory(), "posted")),
+            //    RequestPath = "/posted",
+
+            //    ServeUnknownFileTypes = true,
+            //});
         }
     }
 }

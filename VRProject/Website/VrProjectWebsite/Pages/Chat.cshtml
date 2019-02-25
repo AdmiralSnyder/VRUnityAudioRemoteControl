@@ -1,20 +1,25 @@
 @page "/chat"
 @inherits ChatComponent
 
-<h4>Upload Chunked</h4>
-<form class="form-inline">
-    <div class="input-append">
-        <input type="file" id="fileUpload" onchange="@UploadFileChunked" ref="fileInput" /> @*bind="FileUploadContent"*@
-    </div>
-</form>
+<h3> Upload</h3>
+<div>
+    <h4>Upload Chunked</h4>
+    <form class="form-inline">
+        <div class="input-append">
+            <input type="file" id="fileUpload" onchange="@UploadFileChunked" ref="fileInput" /> @*bind="FileUploadContent"*@
+        </div>
+    </form>
 
-<h4>Upload POST</h4>
-<form class="form-inline" method="post" enctype="multipart/form-data" target="hiddenFrame">
-    <input type="file" id="formfile" name="ImageFile" required onchange="this.form.submit()" />
-    <div id="hiddenDiv" style="display:none; visibility:hidden;">
-        <iframe src="hidden.html" height="1" width="1" border="0" scrolling="no" name="hiddenFrame" id="hiddenFrame"></iframe>
-    </div>
-</form>
+    <h4>Upload POST</h4>
+    <form class="form-inline" method="post" enctype="multipart/form-data" target="hiddenFrame">
+        <input type="file" id="formfile" name="ImageFile" required onchange="this.form.submit(); hiddenDiv.style = '';" />
+        <div id="hiddenDiv" style="display:none; visibility:hidden;">
+            <iframe src="hidden.html" height="100" width="300" border="0" scrolling="no" name="hiddenFrame" id="hiddenFrame"></iframe>
+        </div>
+
+        <a href="files/posted/04d5cd42-2e6c-4e5c-8724-37d92eb40cce.mp3.ogg"> ogg </a>
+    </form>
+</div>
 
 <h4>Broadcast Command</h4>
 <form class="form-inline">
@@ -29,6 +34,18 @@
 <form class="form-inline">
     <div class="input-append">
         <input type="color" id="message-color" placeholder="Select a color" bind=@Color /> @*onchange=@SetColor*@
+    </div>
+</form>
+
+<h4>Set Animation</h4>
+<form class="form-inline">
+    <div class="input-append">
+        <select id="message-animation" placeholder="Select an animation" bind=@Animation > @*onchange=@SetColor*@
+        @foreach (var item in Animations.OrderBy(i => i))
+        {
+            <option value=@item>@item</option>
+        }
+        </select>
     </div>
 </form>
 

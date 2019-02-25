@@ -15,9 +15,9 @@ using VrProjectWebsite.Shared;
 
 namespace VrProjectWebsite
 {
-    public class ChatComponent : BlazorComponent, IHasLog
+    public class ChatComponent : BlazorComponent
     {
-        [CascadingParameter] public ChatLayout TheChatLayout { get; set; }
+        //[CascadingParameter] public ChatLayout TheChatLayout { get; set; }
         
         //private Container<IHasLog> _LogItemContainer;
         //[CascadingParameter] protected string TestParameter { get; set; }
@@ -46,7 +46,20 @@ namespace VrProjectWebsite
             }
         }
         private string _Color;
-        
+
+        internal string Animation
+        {
+            get => _Animation;
+            set
+            {
+                _Animation = value;
+                SetAnimation(_Animation);
+            }
+        }
+        private string _Animation;
+
+        public HashSet<string> Animations = new HashSet<string>();
+
         public List<string> _messages { get; set; } = new List<string>();
 
         public List<string> LogOutput { get; set; } = new List<string>();
@@ -94,6 +107,17 @@ namespace VrProjectWebsite
             //only register for logging purposes
             _connection.On<string>("Command", Handle);
 
+            _connection.On<string>("AddAnimations", animations =>
+            {
+                foreach(var animation in animations.Split(','))
+                {
+                    Animations.Add(animation);
+                }
+                StateHasChanged();
+                return Task.CompletedTask;
+            });
+
+
             _connection.OnClose(exc =>
             {
                 _logger.LogError(exc, "Connection was closed!");
@@ -122,6 +146,8 @@ namespace VrProjectWebsite
         internal async Task BroadcastCommand() => await _connection.InvokeAsync("Command", CommandText);
 
         internal async Task SetColor(string color) => await _connection.InvokeAsync("Color", color);
+
+        internal async Task SetAnimation(string animation) => await _connection.InvokeAsync("Animation", animation);
 
         #region Group Management
 

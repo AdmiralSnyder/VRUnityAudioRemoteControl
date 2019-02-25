@@ -12,16 +12,10 @@ using System.Threading.Tasks;
 
 namespace VrProjectWebsite
 {
-    public class ComponentLayoutBindingService
-    {
-
-    }
-
     public class Startup
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddTransient<>
             //services.AddLogging(builder => builder.AddBrowserConsole());
 
             //services.AddSignalR();

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.329
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28606.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Website", "Website", "{B48287AA-CB14-4FB9-8146-2AC11EB25F9A}"
 EndProject
@@ -25,7 +25,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DependencyTestLib", "Tools\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3DA62ACA-71B6-4ABD-8CEB-EF89F476CDCD}"
 	ProjectSection(SolutionItems) = preProject
+		Docs\20181119 Projektstart Entwicklung von VR.docx = Docs\20181119 Projektstart Entwicklung von VR.docx
+		Docs\notes.txt = Docs\notes.txt
 		Docs\Readme.md = Docs\Readme.md
+		Docs\Upload und Wiedergabe von Audio-Dateien.pptx = Docs\Upload und Wiedergabe von Audio-Dateien.pptx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EF377AB4-636C-42EC-9733-0139868AA54D}"
@@ -37,6 +40,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VRProjectUnity", "VRProject
 	ProjectSection(SolutionItems) = preProject
 		Unity\VRProjectUnity\.gitignore = Unity\VRProjectUnity\.gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTypes", "CommonTypes\CommonTypes.csproj", "{4CD31058-E11B-4006-B404-DAA07836E773}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,6 +69,10 @@ Global
 		{873F9B04-945C-4D81-8376-5509C666A716}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{873F9B04-945C-4D81-8376-5509C666A716}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{873F9B04-945C-4D81-8376-5509C666A716}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CD31058-E11B-4006-B404-DAA07836E773}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CD31058-E11B-4006-B404-DAA07836E773}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CD31058-E11B-4006-B404-DAA07836E773}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CD31058-E11B-4006-B404-DAA07836E773}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,6 +84,7 @@ Global
 		{2DAC442E-FE30-46D6-8384-16201A8DA4AD} = {1FB30196-7582-4EBE-8BB7-FB9752BFBC24}
 		{873F9B04-945C-4D81-8376-5509C666A716} = {1FB30196-7582-4EBE-8BB7-FB9752BFBC24}
 		{2357911E-6450-4D09-95FE-402EE79D121D} = {31073116-4ECC-4346-9B9C-CDBD4041D571}
+		{4CD31058-E11B-4006-B404-DAA07836E773} = {EF965334-D23C-4AB6-A66C-35851331CCC2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63080663-D485-4EE1-A85E-3208295AA9EE}

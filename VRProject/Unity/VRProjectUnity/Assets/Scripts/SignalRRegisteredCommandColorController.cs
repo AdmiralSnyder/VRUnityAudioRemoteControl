@@ -4,6 +4,6 @@ public class SignalRRegisteredCommandColorController : SignalRColorControllerBas
 {
     public override void OnInitEvent(object sender, EventArgs<HubConnection> args)
     {
-        args.Data.On<string>("Color", colorString => Color = TryParseColor(colorString, Color));
+        args.Data.On<string>("Color", HandleColor);
     }
 }

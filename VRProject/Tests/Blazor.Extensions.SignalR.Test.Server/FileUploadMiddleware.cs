@@ -40,11 +40,10 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 var forms = await context.Request.ReadFormAsync();
                 var files = forms.Files;
                 bool success = false;
+                var savedFiles = new List<string>();
                 if (files.Any())
                 {
-                    var savedFiles = new List<string>();
                     context.Items.Add("SavedFiles", savedFiles);
-
                     foreach (var file in files)
                     {
                         var extension = Path.GetExtension(file.FileName);
@@ -62,7 +61,8 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 }
 
                 context.Response.StatusCode = 200;
-                await context.Response.WriteAsync("Successfully uploaded.");
+                await context.Response.WriteAsync($"Successfully uploaded.{Environment.NewLine}{string.Join(Environment.NewLine, savedFiles)}");
+
                 if (SuccessPassthrough && success)
                 {
                     await _next.Invoke(context);
