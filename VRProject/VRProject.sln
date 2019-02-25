@@ -26,6 +26,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{3DA62ACA-71B6-4ABD-8CEB-EF89F476CDCD}"
 	ProjectSection(SolutionItems) = preProject
 		Docs\20181119 Projektstart Entwicklung von VR.docx = Docs\20181119 Projektstart Entwicklung von VR.docx
+		Docs\20190225 Dokumentation.docx = Docs\20190225 Dokumentation.docx
 		Docs\notes.txt = Docs\notes.txt
 		Docs\Readme.md = Docs\Readme.md
 		Docs\Upload und Wiedergabe von Audio-Dateien.pptx = Docs\Upload und Wiedergabe von Audio-Dateien.pptx
