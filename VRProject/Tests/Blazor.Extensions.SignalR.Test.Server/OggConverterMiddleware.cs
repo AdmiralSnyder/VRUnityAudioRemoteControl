@@ -43,7 +43,7 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 foreach (var savedFile in savedFiles.Where(sf => sf.EndsWith(".mp3", StringComparison.InvariantCultureIgnoreCase) || sf.EndsWith(".wav", StringComparison.InvariantCultureIgnoreCase)))
                 {
                     await ConvertToOggAsync(Path.Combine(WorkPath, savedFile));
-                    await context.Response.WriteAsync($"Successfully converted.{Environment.NewLine}{$"{savedFile}.ogg"}");
+                    await context.Response.WriteAsync($"{savedFile}.ogg");
                 }
             }
             else

@@ -1025,7 +1025,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633583904}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 67c733ba5fd4f6e4aae990dfe33a36de, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fb30fad864abcb429c621c7458a7849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   remoteControlEnabled: 1
@@ -1039,7 +1039,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633583904}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7143bebbc8056e84ebb9c410c941278d, type: 3}
+  m_Script: {fileID: 11500000, guid: a4d5f791ef99f1f419cb3f89768940ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   entity: {fileID: 1633583908}

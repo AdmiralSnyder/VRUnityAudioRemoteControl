@@ -68,6 +68,8 @@ namespace Blazor.Extensions.SignalR.Test.Server.Hubs
 
         public Task Color(string color) => Clients.All.SendAsync("Color", color);
 
+        public Task Audio(string audio) => Clients.All.SendAsync("Audio", audio);
+
         public Task Animation(string animation) => Clients.All.SendAsync("Animation", animation);
 
         public Task File(string filename, string guid, int count, int pckg, string part)

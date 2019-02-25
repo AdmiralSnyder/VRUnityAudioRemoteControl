@@ -25,7 +25,7 @@ public abstract class SignalRAudioControllerBase<TSignalRController, TArgs> : Si
             if (_SoundFile != value)
             {
                 _SoundFile = value;
-                PlayAudioFile(_SoundFile);
+                PlayAudio(_SoundFile);
             }
         }
     }
@@ -50,6 +50,31 @@ public abstract class SignalRAudioControllerBase<TSignalRController, TArgs> : Si
         ".wav",
         ".ogg"
     };
+
+    private void PlayAudio(string url)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            if (File.Exists(url))
+            {
+                url = "file://" + url;
+            }
+            //UnityWebRequest uwr = new UnityWebRequest(link);
+            //var data = uwr.downloadHandler.data;
+            //AudioClip clip2 = AudioClip.Create( new AudioClip();
+            else if (!url.StartsWith("http")) // HACK - rausbekommen, ob das wirklich ein relativer URL ist.
+            {
+                url = entity.entity.clientController.connectionManager.UsedSignalRServer + "/" + url;
+            }
+            WWW www1 = new WWW(url);
+            AudioClip clip = www1.GetAudioClip(false, true/*AudioType.OGGVORBIS*/);
+            //if (clip.isReadyToPlay)
+            {
+                audioSource.clip = clip;
+                audioSource.Play();
+            }
+        });
+    }
 
     private bool PlayAudioFile(string fileName)
     {
@@ -94,16 +119,15 @@ public abstract class SignalRAudioControllerBase<TSignalRController, TArgs> : Si
         return true;
     }
 
-    public bool HandleAudioCommand(string audioCommand)
+    public void HandleAudioCommand(string audioCommand)
     {
         switch (audioCommand)
         {
             case "stop": StopAudio(); break;
             case "mute": Muted = true; break;
             case "unmute": Muted = false; break;
-            default: return PlayAudioFile(audioCommand);
+            default: PlayAudio(audioCommand); break;
         }
-        return true;
     }
 
     private void StopAudio()

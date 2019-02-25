@@ -36,6 +36,21 @@ namespace VrProjectWebsite
 
         internal string CommandText { get; set; }
 
+        internal string UploadPostResult
+        {
+            get => _UploadPostResult;
+            set
+            {
+                if (value != _UploadPostResult)
+                {
+                    _logger.LogInformation("ergebnis");
+                    StateHasChanged();
+                    _UploadPostResult = value;
+                }
+            }
+        }
+        private string _UploadPostResult;
+
 
         internal string Color {
             get => _Color;
@@ -144,8 +159,16 @@ namespace VrProjectWebsite
         }
 
         internal async Task BroadcastCommand() => await _connection.InvokeAsync("Command", CommandText);
+        internal void FormChanged()
+        {
+            _logger.LogInformation("FormChanged");
+        }
+
+        internal async Task HiddenDivChanged() => await _connection.InvokeAsync("Command", "mieps.");
 
         internal async Task SetColor(string color) => await _connection.InvokeAsync("Color", color);
+
+        internal async Task SetAudio(string audio) => await _connection.InvokeAsync("Audio", audio);
 
         internal async Task SetAnimation(string animation) => await _connection.InvokeAsync("Animation", animation);
 

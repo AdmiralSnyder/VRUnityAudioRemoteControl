@@ -61,7 +61,7 @@ namespace Blazor.Extensions.SignalR.Test.Server
                 }
 
                 context.Response.StatusCode = 200;
-                await context.Response.WriteAsync($"Successfully uploaded.{Environment.NewLine}{string.Join(Environment.NewLine, savedFiles)}");
+                await context.Response.WriteAsync($"  ");
 
                 if (SuccessPassthrough && success)
                 {

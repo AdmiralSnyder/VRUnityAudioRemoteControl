@@ -10,15 +10,54 @@
         </div>
     </form>
 
+    <form>
+        <input type="text" value="" id="postResponse" name="postResponse" bind=@UploadPostResult ref="input_postResponse" />
+        @functions {ElementRef input_postResponse;}
+    </form>
+
     <h4>Upload POST</h4>
-    <form class="form-inline" method="post" enctype="multipart/form-data" target="hiddenFrame">
-        <input type="file" id="formfile" name="ImageFile" required onchange="this.form.submit(); hiddenDiv.style = '';" />
-        <div id="hiddenDiv" style="display:none; visibility:hidden;">
-            <iframe src="hidden.html" height="100" width="300" border="0" scrolling="no" name="hiddenFrame" id="hiddenFrame"></iframe>
+    <form class="form-inline" id="uploadPostForm" method="post" enctype="multipart/form-data" target="hiddenFrame" ref="form_uploadPostForm">
+        @functions {ElementRef form_uploadPostForm;}
+        <input type="file" id="formfile" name="ImageFile" required
+               onchange="@FileInputChangedSubmitForm" />
+        <div id="hiddenDiv" @*style="display:none; visibility:hidden;" *@>
+            <iframe src="iframDummy.html" height="100" width="300" border="0" scrolling="no" 
+                    name="hiddenFrame" id="hiddenFrame"></iframe>
         </div>
 
         <a href="files/posted/04d5cd42-2e6c-4e5c-8724-37d92eb40cce.mp3.ogg"> ogg </a>
     </form>
+
+    @functions
+    {
+        public async void FileInputChangedSubmitForm()
+        {
+            await SubmitForm(form_uploadPostForm);
+            string initialcontent = await JSRuntime.Current.InvokeAsync<string>("JsFunctions.GetIFrameInnerHtml");
+
+            string content = initialcontent;
+            DateTime timeout = DateTime.UtcNow.AddSeconds(5);
+            int cnt = 0;
+            while (timeout > DateTime.UtcNow && content == initialcontent)
+            {
+                cnt++;
+                await JSRuntime.Current.InvokeAsync<object>("JsFunctions.SetValue", input_postResponse, $"converting & transferring... {cnt}00 ms");
+                await Task.Delay(100);
+                content = await JSRuntime.Current.InvokeAsync<string>("JsFunctions.GetIFrameInnerHtml");
+            }
+            if (content != initialcontent)
+            {
+                await JSRuntime.Current.InvokeAsync<object>("JsFunctions.SetValue", input_postResponse, "sending audio command...");
+                await SetAudio($"files/{content.Trim().Replace('\\', '/')}");
+                await JSRuntime.Current.InvokeAsync<object>("JsFunctions.SetValue", input_postResponse, "sent audio command...");
+            }
+        }
+
+        public static Task SubmitForm(ElementRef form)
+        {
+            return JSRuntime.Current.InvokeAsync<object>("JsFunctions.SubmitForm", form);
+        }
+    }
 </div>
 
 <h4>Broadcast Command</h4>
@@ -26,6 +65,7 @@
     <div class="input-append">
         <input type="text" id="message-text" placeholder="Type a message" bind=@CommandText />
         <input type="button" id="broadcast" class="btn" value="Broadcast" onclick=@BroadcastCommand />
+        <input type="button" id="broadcastTEST" class="btn" value="BroadcastTEST" onclick=@FormChanged />
         <input type="button" id="broadcast-exceptme" class="btn" value="Broadcast (Others)" onclick=@SendToOthers />
     </div>
 </form>
@@ -53,7 +93,7 @@
     @foreach (var msg in _messages)
     {
         <li>@msg</li>
-    }
+        }
 </ul>
 
 <div>
