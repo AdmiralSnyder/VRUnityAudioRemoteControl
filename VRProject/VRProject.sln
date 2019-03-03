@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VrProjectWebsite", "Website
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Unity", "Unity", "{31073116-4ECC-4346-9B9C-CDBD4041D571}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.SignalR.Test.Server", "Tests\Blazor.Extensions.SignalR.Test.Server\Blazor.Extensions.SignalR.Test.Server.csproj", "{02DA4708-4499-476B-83B5-38A90DFA86F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRProjectServer", "Tests\Blazor.Extensions.SignalR.Test.Server\VRProjectServer.csproj", "{02DA4708-4499-476B-83B5-38A90DFA86F7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{1FB30196-7582-4EBE-8BB7-FB9752BFBC24}"
 EndProject

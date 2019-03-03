@@ -18,7 +18,7 @@ public abstract class SignalREntityController : MonoBehaviour
 
     #endregion
 
-    public List<SignalRUnityControllerBase> EventControllers { get; } = new List<SignalRUnityControllerBase>();
+    public List<SignalRUnityFeatureBase> FeatureControllers { get; } = new List<SignalRUnityFeatureBase>();
 
     void Awake() => AwakeVirtual();
 
@@ -28,7 +28,7 @@ public abstract class SignalREntityController : MonoBehaviour
 
     internal void Connected(HubConnection hubConnection)
     {
-        foreach (var eventController in EventControllers)
+        foreach (var eventController in FeatureControllers)
         {
             eventController.Connected(hubConnection);
         }

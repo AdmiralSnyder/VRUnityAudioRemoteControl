@@ -238,12 +238,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 55b77cdf8342ebc41be1db28ce3d9943, type: 3}
---- !u!95 &263083359 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 9500000, guid: 55b77cdf8342ebc41be1db28ce3d9943,
-    type: 3}
-  m_PrefabInstance: {fileID: 220072063}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -619,11 +613,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 859888142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc3c98e38aada894dba549ec92e829f1, type: 3}
+  m_Script: {fileID: 11500000, guid: b1da606c0fd8c124a8702cd716ce5a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 859888148}
-  coloredObject: {fileID: 859888144}
+  remoteControlEnabled: 1
+  entity: {fileID: 859888149}
 --- !u!114 &859888148
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,11 +627,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 859888142}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fb30fad864abcb429c621c7458a7849, type: 3}
+  m_Script: {fileID: 11500000, guid: 2dc944b0f98fc5b41ba62b0ad23c2727, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remoteControlEnabled: 1
-  entity: {fileID: 859888149}
+  entityController: {fileID: 859888147}
+  coloredObject: {fileID: 859888144}
 --- !u!114 &859888149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -760,12 +754,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1061362509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be97915ea79672a4599d7a70c9734c52, type: 3}
+  m_Script: {fileID: 11500000, guid: 288fc504f04477045ad42b92d6dac3df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 1061362511}
-  animator: {fileID: 263083359}
-  DefaultAnimation: Idle
+  remoteControlEnabled: 1
+  entity: {fileID: 1061362512}
 --- !u!114 &1061362511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -775,11 +768,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1061362509}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fb30fad864abcb429c621c7458a7849, type: 3}
+  m_Script: {fileID: 11500000, guid: 64fa8f0d7a196554b8896b3b4899192c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  remoteControlEnabled: 1
-  entity: {fileID: 1061362512}
+  entityController: {fileID: 1061362510}
+  animator: {fileID: 1061362515}
+  DefaultAnimation: Idle
 --- !u!114 &1061362512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -794,6 +788,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entityName: avatar
   clientController: {fileID: 1562640818}
+--- !u!114 &1061362513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061362509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1da606c0fd8c124a8702cd716ce5a28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  remoteControlEnabled: 1
+  entity: {fileID: 1061362512}
+--- !u!114 &1061362514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1061362509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efa17d98ad2dda34186015ce43d29ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  entityController: {fileID: 1061362513}
+  animator: {fileID: 1061362515}
+  DefaultAnimation: Idle
+--- !u!95 &1061362515 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: 55b77cdf8342ebc41be1db28ce3d9943,
+    type: 3}
+  m_PrefabInstance: {fileID: 220072063}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1562640816
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,7 +835,7 @@ GameObject:
   - component: {fileID: 1562640819}
   - component: {fileID: 1562640818}
   m_Layer: 0
-  m_Name: SignalRObject
+  m_Name: SignalRClient
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -854,7 +883,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   signalRServer: http://localhost:64987/
-  hub: chathub
+  hub: unityremotecontrolhub
+  useCommandLine: 1
 --- !u!1 &1608125916 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 184210, guid: e322e7f273f8f774d9491dc74ceebaba,
@@ -1025,7 +1055,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633583904}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fb30fad864abcb429c621c7458a7849, type: 3}
+  m_Script: {fileID: 11500000, guid: b1da606c0fd8c124a8702cd716ce5a28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   remoteControlEnabled: 1
@@ -1039,10 +1069,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1633583904}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4d5f791ef99f1f419cb3f89768940ea, type: 3}
+  m_Script: {fileID: 11500000, guid: d98d4c03b2c737c48b33fcecbfe14194, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  entity: {fileID: 1633583908}
+  entityController: {fileID: 1633583908}
   audioSource: {fileID: 1633583905}
 --- !u!114 &1633583910
 MonoBehaviour:

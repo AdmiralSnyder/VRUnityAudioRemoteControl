@@ -31,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Pages\Chat.cshtml">
+    <Content Update="Pages\UnityRemoteControl.cshtml">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
       <Generator>MSBuild:BlazorGenerateDeclaration</Generator>
     </Content>

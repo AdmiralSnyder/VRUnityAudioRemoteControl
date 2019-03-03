@@ -12,13 +12,38 @@ using System.Net.Http;
 
 using Debug = UnityEngine.Debug;
 
+/// <summary>
+/// Steuerung eines Clients.
+/// </summary>
 public class SignalRClientController : MonoBehaviour
 {
+    /// <summary>
+    /// Bindung an den Server und Hub
+    /// </summary>
     public SignalRConnectionManager connectionManager;
+    /// <summary>
+    /// Name des Clients
+    /// </summary>
     public string clientName = "unity";
+    /// <summary>
+    /// Soll SignalR benutzt werden?
+    /// </summary>
     public bool signalREnabled = true;
 
+    /// <summary>
+    /// Die Entitäten des Clients. Wird zu Anfang initialisiert.
+    /// </summary>
     public List<SignalREntityController> EntityControllers { get; } = new List<SignalREntityController>();
+
+    /// <summary>
+    /// Vollständiger URL zum SignalR-Hub
+    /// </summary>
+    private string SignalRHubUrl => $"{connectionManager.UsedSignalRServer}/{connectionManager.hub}";
+
+    /// <summary>
+    /// die Verbindung zum Hub.
+    /// </summary>
+    private HubConnection HubConnection = null;
 
     public void Start() => StartVirtual();
 
@@ -31,9 +56,7 @@ public class SignalRClientController : MonoBehaviour
             StartSignalRAsync();
         }
     }
-
-    private string SignalRUrl => $"{connectionManager.UsedSignalRServer}/{connectionManager.hub}";
-
+    
     public async Task<string> GetJwtToken(string userId)
     {
         var http = new HttpClient { BaseAddress = new Uri(connectionManager.UsedSignalRServer) };
@@ -42,8 +65,6 @@ public class SignalRClientController : MonoBehaviour
         return await httpResponse.Content.ReadAsStringAsync();
     }
 
-    private HubConnection HubConnection = null;
-
     async void StartSignalRAsync()
     {
         if (HubConnection == null)
@@ -51,7 +72,8 @@ public class SignalRClientController : MonoBehaviour
             Debug.Log("configuring Connection...");
 
             HubConnection = new HubConnectionBuilder()
-                .WithUrl(SignalRUrl,
+                .WithUrl(SignalRHubUrl,
+                /// Optionen konfigurieren - hauptsächlich aus SignalR-Beispielanwendung übernommen
                 opt =>
                 {
                     Debug.Log($"Setting Options...");
@@ -75,27 +97,20 @@ public class SignalRClientController : MonoBehaviour
 
             Debug.Log("Attaching event...");
             HubConnection.Closed += HubConnection_Closed;
-            //HubConnection.On<string>("Connected", connectionID =>
-            //{
-            //    if (connectionID == HubConnection.Connection)
-            //});
 
+            /// Die Kommandos der einzelnen Entitäten registrieren
             foreach (var entityController in EntityControllers)
             {
                 entityController.RegisterCommands(HubConnection);
             }
 
-            //_hubConnection.On<string, string>("Receive", (user, message) =>
-            //{
-            //    Debug.Log($"Receive {message}");
-            //});
-
             Debug.Log("Starting Asynchronously...");
             await HubConnection.StartAsync();
 
-            foreach (var entity in EntityControllers)
+            /// den Entitäten Bescheidsagen, dass wir verbunden sind.
+            foreach (var entityController in EntityControllers)
             {
-                entity.Connected(HubConnection);
+                entityController.Connected(HubConnection);
             }
 
             Debug.Log("Started..." + $"{HubConnection.State}");

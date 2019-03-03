@@ -27,39 +27,49 @@ namespace Blazor.Extensions.SignalR.Test.Server
         }
     }
 
-    public class FileDownloaderMiddleware
+    /// <summary>
+    /// Middleware, die Dateidownload aus dem posted-Unterverzeichnis ermöglicht.
+    /// </summary>
+    public class FileDownloaderMiddleware : MiddlewareBase<FileDownloaderMiddleware>
     {
-        private readonly RequestDelegate _next;
-        private IHostingEnvironment _hostingEnv;
-        internal static string WorkPath;
-        internal static string Folder;
+        /// <summary>
+        /// Der nächste Eintrag in der Request-pipeline
+        /// </summary>
+        private readonly RequestDelegate Next;
+        private IHostingEnvironment HostingEnv;
 
-        public FileDownloaderMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv)
-        {
-            _next = next;
-            _hostingEnv = hostingEnv;
-        }
+        /// <summary>
+        /// Das Basisverzeichnis, in dem wir arbeiten
+        /// </summary>
+        internal static string WorkPath;
+
+        public FileDownloaderMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv) => (Next, HostingEnv) = (next, hostingEnv);
 
         public async Task Invoke(HttpContext context)
         {
+            ///Get-Methoden
             if (context.Request.Method == HttpMethods.Get)
             {
                 string pathValue = context.Request.Path.Value;
+                /// die sich auf den korrekten Ordner beziehen
                 if (pathValue.Contains($"/{Folder}/"))
                 {
                     string file = pathValue.Split($"/{Folder}/").Last();
                     string path = Path.Combine(WorkPath, Folder, file);
+                    /// und eine existierende Datei haben wollen
                     if (File.Exists(path))
                     {
+                        // TODO .ogg als Endung prüfen
                         context.Response.StatusCode = 200;
                         context.Response.ContentType = "audio/ogg";
+                        /// zurückgeben
                         await context.Response.SendFileAsync(path);
                     }
                     return;
                 }
             }
 
-            await _next.Invoke(context);
+            await Next.Invoke(context);
         }
     }
 }

@@ -7,16 +7,29 @@ using UnityEngine;
 
 public class SignalRConnectionManager : MonoBehaviour
 {
+    /// <summary>
+    /// Adresse bzw. Basispfad des SignalR-Servers
+    /// </summary>
     public string signalRServer = "http://localhost:64987";
-    public string hub = "chathub";
+    /// <summary>
+    /// Name des SignalR-Hubs
+    /// </summary>
+    public string hub = "unityremotecontrolhub";
+    /// <summary>
+    /// Soll der "server=..." - Parameter ausgewertet werden?
+    /// </summary>
+    public bool useCommandLine = true;
 
+    /// <summary>
+    /// der tatsächlich verwendete SignalR-Server
+    /// </summary>
     public string UsedSignalRServer { get; private set; }
 
     public void Awake()
     {
         UsedSignalRServer = signalRServer;
 
-        if (Environment.GetCommandLineArgs().FirstOrDefault(a => a.StartsWith("server=")) is string serverArg)
+        if (useCommandLine && Environment.GetCommandLineArgs().FirstOrDefault(a => a.StartsWith("server=")) is string serverArg)
         {
             UsedSignalRServer = serverArg.Split('=')[1];
         }

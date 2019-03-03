@@ -11,6 +11,14 @@ namespace Blazor.Extensions.SignalR.Test.Server
 {
     public static class FileUploadExtensions
     {
+        /// <summary>
+        /// Fügt die Fähigkeit, Dateien hochzuladen hinzu.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="env"></param>
+        /// <param name="folder">gibt an, wo die Dateien hinkommen, die hochgeladen werden.</param>
+        /// <param name="successPassthrough">gibt an, ob bei erfolgreichem durchlaufen des pipelineschrittes dennoch der folgende ausgeführt werden soll.</param>
+        /// <returns></returns>
         public static IApplicationBuilder UseFileUpload(this IApplicationBuilder builder, IHostingEnvironment env, string folder, bool successPassthrough = false)
         {
             Directory.CreateDirectory(Path.Combine(env.WebRootPath ?? env.ContentRootPath, FileUploadMiddleware.Folder));
@@ -20,19 +28,14 @@ namespace Blazor.Extensions.SignalR.Test.Server
         }
     }
 
-    public class FileUploadMiddleware
+    public class FileUploadMiddleware : MiddlewareBase<FileUploadMiddleware>
     {
-        internal static string Folder { get; set; } = "posted";
+        /// <summary>
+        /// gibt an, wo die Dateien hinkommen, die hochgeladen werden.
+        /// </summary>
         internal static bool SuccessPassthrough { get; set; }
 
-        private readonly RequestDelegate _next;
-        private IHostingEnvironment _hostingEnv;
-
-        public FileUploadMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv)
-        {
-            _next = next;
-            _hostingEnv = hostingEnv;
-        }
+        public FileUploadMiddleware(RequestDelegate next, IHostingEnvironment hostingEnv) => (Next, HostingEnv) = (next, hostingEnv);
 
         public async Task Invoke(HttpContext context)
         {
@@ -66,12 +69,12 @@ namespace Blazor.Extensions.SignalR.Test.Server
 
                 if (SuccessPassthrough && success)
                 {
-                    await _next.Invoke(context);
+                    await Next.Invoke(context);
                 }
             }
             else
             {
-                await _next.Invoke(context);
+                await Next.Invoke(context);
             }
         }
     }
