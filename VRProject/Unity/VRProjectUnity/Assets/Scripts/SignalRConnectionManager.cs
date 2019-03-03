@@ -10,7 +10,7 @@ public class SignalRConnectionManager : MonoBehaviour
     /// <summary>
     /// Adresse bzw. Basispfad des SignalR-Servers
     /// </summary>
-    public string signalRServer = "http://localhost:64987";
+    public string signalRServer = "http://localhost:5000";
     /// <summary>
     /// Name des SignalR-Hubs
     /// </summary>

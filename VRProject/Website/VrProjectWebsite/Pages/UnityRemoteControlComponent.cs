@@ -115,6 +115,7 @@ namespace VrProjectWebsite
             });
 
             await Connection.StartAsync();
+            
         }
 
         private Task PrintCommand(object msg)

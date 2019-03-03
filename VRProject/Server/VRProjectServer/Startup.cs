@@ -17,5 +17,24 @@ namespace Blazor.Extensions.SignalR.Test.Server
             app.UseOggConverter(env, postedFolder);
             app.UseFileDownloader(env, postedFolder);
         }
+
+        public void Configure_Security(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // HACK, um SSL für die Demoversion zu deaktivieren.
+#if !DEBUG
+                app.UseHsts();
+#endif
+            }
+#if !DEBUG
+            app.UseHttpsRedirection();
+#endif
+        }
     }
 }

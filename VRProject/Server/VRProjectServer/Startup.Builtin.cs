@@ -113,31 +113,23 @@ namespace Blazor.Extensions.SignalR.Test.Server
             #region Default-Werte aus Demo-Anwendung
             app.UseResponseCompression();
 
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
-            }
-            app.UseHttpsRedirection();
+            Configure_Security(app, env);
+
             app.UseCookiePolicy();
             app.UseCors("CorsPolicy");
-            #endregion
+#endregion
 
             Configure_SignalRHub(app, env);
             Configure_CustomMiddleware(app, env);
 
-            #region Default-Werte aus Demo-Anwendung
+#region Default-Werte aus Demo-Anwendung
             app.UseMvc(routes =>
             {
                 routes.MapRoute(name: "default", template: "{controller}/{action}/{id?}");
             });
 
             app.UseBlazor<VrProjectWebsite.Program>();
-            #endregion
+#endregion
         }
     }
 }
