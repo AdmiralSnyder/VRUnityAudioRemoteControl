@@ -101,18 +101,28 @@ namespace NugetLib
 
                             foreach (XmlNode groupNode in doc.SelectNodes("./nuspec:package/nuspec:metadata/nuspec:dependencies/*", nsmgr))
                             {
-                                var targetFramework = groupNode.Attributes["targetFramework"].Value;
-                                if (targetFramework != ".NETStandard2.0") continue;
-
-                                foreach (XmlNode dependencyNode in groupNode.ChildNodes)
+                                var targetFrameworkAttr = groupNode.Attributes.GetNamedItem("targetFramework");
+                                if (targetFrameworkAttr != null)
                                 {
-                                    package.Dependencies.Add(new PackageDependency
+                                    var targetFramework = groupNode.Attributes["targetFramework"].Value;
+                                    if (!(targetFramework == ".NETStandard2.0"
+                                        || targetFramework == "netcoreapp2.0"
+                                        || targetFramework == "netcoreapp2.1")) continue;
+
+                                    foreach (XmlNode dependencyNode in groupNode.ChildNodes)
                                     {
-                                        TargetFramework = targetFramework,
-                                        ID = dependencyNode.Attributes["id"].Value,
-                                        Version = dependencyNode.Attributes["version"].Value,
-                                        Exclude = dependencyNode.Attributes["exclude"]?.Value,
-                                    });
+                                        package.Dependencies.Add(new PackageDependency
+                                        {
+                                            TargetFramework = targetFramework,
+                                            ID = dependencyNode.Attributes["id"].Value,
+                                            Version = dependencyNode.Attributes["version"].Value,
+                                            Exclude = dependencyNode.Attributes["exclude"]?.Value,
+                                        });
+                                    }
+                                }
+                                else
+                                {
+
                                 }
                             }
                         }

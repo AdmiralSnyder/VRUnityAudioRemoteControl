@@ -9,9 +9,7 @@ public abstract class SignalREntityController : MonoBehaviour
 {
     #region public fields for unity
 
-    /// <summary>
-    /// Soll Fernsteuerung aktiviert werden?
-    /// </summary>
+    /// <summary>Soll Fernsteuerung aktiviert werden?</summary>
     public bool remoteControlEnabled = true;
 
     public SignalREntity entity;
