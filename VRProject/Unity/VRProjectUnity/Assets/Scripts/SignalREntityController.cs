@@ -26,9 +26,17 @@ public abstract class SignalREntityController : MonoBehaviour
 
     internal void Connected(HubConnection hubConnection)
     {
-        foreach (var eventController in FeatureControllers)
+        foreach (var featureController in FeatureControllers)
         {
-            eventController.Connected(hubConnection);
+            featureController.Connected(hubConnection);
+        }
+    }
+
+    internal void Disconnect()
+    {
+        foreach (var featureController in FeatureControllers)
+        {
+            featureController.Disconnect();
         }
     }
 }

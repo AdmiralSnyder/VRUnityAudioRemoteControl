@@ -4,7 +4,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace Blazor.Extensions.SignalR.Test.Server.Controllers
+namespace VRProjectServer.Controllers
 {
     [Route("generatetoken")]
     public class TokenController : Controller
@@ -13,9 +13,9 @@ namespace Blazor.Extensions.SignalR.Test.Server.Controllers
         public string GenerateToken()
         {
             var claims = new[] { new Claim(ClaimTypes.NameIdentifier, Request.Query["user"]) };
-            var credentials = new SigningCredentials(Startup.SecurityKey, SecurityAlgorithms.HmacSha256); // Too lazy to inject the key as a service
+            var credentials = new SigningCredentials(SecurityConfig.SecurityKey, SecurityAlgorithms.HmacSha256); // Too lazy to inject the key as a service
             var token = new JwtSecurityToken("SignalRTestServer", "SignalRTests", claims, expires: DateTime.UtcNow.AddSeconds(30), signingCredentials: credentials);
-            return Startup.JwtTokenHandler.WriteToken(token); // Even more lazy here
+            return SecurityConfig.JwtTokenHandler.WriteToken(token); // Even more lazy here
         }
     }
 }

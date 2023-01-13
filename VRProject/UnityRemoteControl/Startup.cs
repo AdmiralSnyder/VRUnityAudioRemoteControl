@@ -100,7 +100,7 @@ namespace UnityRemoteControl
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
                 {
                     MediaTypeNames.Application.Octet,
-                    WasmMediaTypeNames.Application.Wasm,
+                    "application/wasm",
                 });
             });
 

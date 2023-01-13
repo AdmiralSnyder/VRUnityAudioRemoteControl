@@ -11,6 +11,7 @@ using UnityEngine;
 using System.Net.Http;
 
 using Debug = UnityEngine.Debug;
+using Unity.VisualScripting;
 
 /// <summary>
 /// Steuerung eines Clients.
@@ -45,7 +46,25 @@ public class SignalRClientController : MonoBehaviour
     /// </summary>
     private HubConnection HubConnection = null;
 
-    public void Start() => StartVirtual();
+    private bool running = false;
+
+    public bool connect = false;
+    private bool oldConnect = false;
+    public async void OnValidate()
+    {
+        if (running && oldConnect != connect && connect && HubConnection is not null)
+        {
+            DisconnectEntityControllers();
+            ConnectEntityControllers();
+            connect = false;
+        }
+    }
+
+    public void Start()
+    {
+        running = true;
+        StartVirtual();
+    }
 
     protected virtual void StartVirtual()
     {
@@ -70,7 +89,6 @@ public class SignalRClientController : MonoBehaviour
         if (HubConnection == null)
         {
             Debug.Log("configuring Connection...");
-
             HubConnection = new HubConnectionBuilder()
                 .WithUrl(SignalRHubUrl,
                 /// Optionen konfigurieren - hauptsächlich aus SignalR-Beispielanwendung übernommen
@@ -107,17 +125,30 @@ public class SignalRClientController : MonoBehaviour
             Debug.Log("Starting Asynchronously...");
             await HubConnection.StartAsync();
 
-            /// den Entitäten Bescheidsagen, dass wir verbunden sind.
-            foreach (var entityController in EntityControllers)
-            {
-                entityController.Connected(HubConnection);
-            }
+            ConnectEntityControllers();
 
             Debug.Log("Started..." + $"{HubConnection.State}");
         }
         else
         {
             Debug.Log("SignalR already connected...");
+        }
+    }
+
+    private void ConnectEntityControllers()
+    {
+        /// den Entitäten Bescheidsagen, dass wir verbunden sind.
+        foreach (var entityController in EntityControllers)
+        {
+            entityController.Connected(HubConnection);
+        }
+    }
+    private void DisconnectEntityControllers()
+    {
+        /// den Entitäten Bescheidsagen, dass wir verbunden sind.
+        foreach (var entityController in EntityControllers)
+        {
+            entityController.Disconnect();
         }
     }
 

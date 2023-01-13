@@ -14,6 +14,8 @@ public abstract class SignalRUnityFeatureBase : MonoBehaviour
     /// </summary>
     /// <param name="hubConnection"></param>
     public virtual void Connected(HubConnection hubConnection) { }
+
+    public virtual void Disconnect() { }
 }
 
 /// <summary>
