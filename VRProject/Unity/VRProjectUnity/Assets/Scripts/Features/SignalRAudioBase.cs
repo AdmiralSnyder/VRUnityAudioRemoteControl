@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// Generische abstrakte Basisklasse für das Abspielen von Audioquellen
@@ -81,14 +84,40 @@ public abstract class SignalRAudioBase<TEntityController, TArgs> : SignalRUnityF
             {
                 url = entityController.entity.clientController.connectionManager.UsedSignalRServer + "/" + url;
             }
-            WWW www1 = new WWW(url);
-            AudioClip clip = www1.GetAudioClip(false, true/*AudioType.OGGVORBIS*/);
-            //if (clip.isReadyToPlay)
+            if (TryGetAudioClip(url, out var audioClip))
             {
-                audioSource.clip = clip;
+                audioSource.clip = audioClip;
                 audioSource.Play();
             }
         });
+    }
+
+
+    private bool TryGetAudioClip(string url, out AudioClip audioClip)
+    {
+        var enumerator = GetAudioClip(url);
+        audioClip = null;
+        while(enumerator.MoveNext())
+        {
+            audioClip = enumerator.Current as AudioClip;
+        }
+        return audioClip != null;
+    }
+
+    private IEnumerator GetAudioClip(string url)
+    {
+        using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.OGGVORBIS);
+        yield return www.SendWebRequest();
+
+        if (www.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(www.error);
+        }
+        else
+        {
+            AudioClip myClip = DownloadHandlerAudioClip.GetContent(www);
+            yield return myClip;
+        }
     }
 
     public void HandleAudioCommand(string audioCommand)

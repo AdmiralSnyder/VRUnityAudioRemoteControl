@@ -1,3 +1,4 @@
+using AdminPanelBlazorServer.Components;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -92,6 +93,8 @@ builder.Services.AddScoped<HttpClient>(s =>
         BaseAddress = new Uri(navMan.BaseUri)
     };
 });
+
+builder.Services.AddSingleton(new HubConnector());
 
 var app = builder.Build();
 

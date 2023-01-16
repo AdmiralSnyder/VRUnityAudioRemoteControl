@@ -50,13 +50,20 @@ public class SignalRClientController : MonoBehaviour
 
     public bool connect = false;
     private bool oldConnect = false;
-    public async void OnValidate()
+    public void OnValidate()
     {
-        if (running && oldConnect != connect && connect && HubConnection is not null)
+        if (running && oldConnect != connect && connect)
         {
-            DisconnectEntityControllers();
-            ConnectEntityControllers();
-            connect = false;
+            if (HubConnection is null)
+            {
+                StartSignalRAsync();
+            }
+            else
+            {
+                DisconnectEntityControllers();
+                ConnectEntityControllers();
+                connect = false;
+            }
         }
     }
 

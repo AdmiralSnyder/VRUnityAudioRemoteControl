@@ -11,6 +11,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "applicationUrl": "http://localhost:5140",
+      "launchUrl": "http://localhost:5140/UnityRemoteControl",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
